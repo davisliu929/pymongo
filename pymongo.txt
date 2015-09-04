@@ -1,0 +1,70 @@
+Ubuntu 內建 python3
+
+安裝pymongo 套件
+python3 --version     # should return 'Python 3.4.0'
+sudo apt-get install python3-pip
+sudo pip3 install pymongo
+
+進入python 3
+$ python3
+
+呼叫套件
+>>> from pymongo import MongoClient
+
+選擇連線DB
+>>> client = MongoClient('localhost', 27017)           
+				       # connects to the default database port on localhost
+
+>>> db = client.test                       # connects to the 'test' database
+
+確定DB名稱
+>>> db.name
+‘test'
+
+建立collection
+post = {"author": "Mike",
+            "text": "My first blog post!",
+            "tags": ["mongodb", "python", "pymongo"],
+            "date": datetime.datetime.utcnow()}
+
+posts = db.posts  					#定義posts(collection posts)
+post_id = posts.insert_one(post).inserted_id		＃插入資料
+post_id 						#查詢插入id
+
+查詢collection 項目
+db.collection_names(include_system_collections=False)
+
+查collection資料
+posts.find_one()
+posts.find_one({"author": "Mike"})
+
+多筆資料匯入
+new_posts = [{"author": "Mike",
+                      "text": "Another post!",
+                  "tags": ["bulk", "insert"],
+                  "date": datetime.datetime(2009, 11, 12, 11, 14)},
+                  {"author": "Eliot",
+                  "title": "MongoDB is fun",
+                  "text": "and pretty easy too!",
+                  "date": datetime.datetime(2009, 11, 10, 10, 45)}]
+result = posts.insert_many(new_posts)
+result.inserted_ids
+
+
+
+
+
+使用python將資料匯入mongo
+from pymongo import MongoClient
+client = MongoClient()
+db = client.test
+user = db.user
+new_post = []
+import csv
+with open ('categories.csv') as f:
+	f_csv = csv.DictReader(f)
+	for row in f_csv:
+		new_post.append(row)
+	print(new_post)
+result = user.insert_many(new_post)
+result.inserted_ids
